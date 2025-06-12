@@ -16,14 +16,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2) Node.js のセットアップ（pnpm のキャッシュも有効化）
+      # 2) Node.js と pnpm キャッシュのセットアップ
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
           cache: "pnpm"
 
-      # 3) pnpm のセットアップ
+      # 3) pnpm 自体をセットアップ
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
