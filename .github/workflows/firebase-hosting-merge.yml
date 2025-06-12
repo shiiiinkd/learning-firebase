@@ -1,42 +1,39 @@
+# .github/workflows/firebase-hosting-merge.yml
+
 name: Deploy to Firebase Hosting on merge
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) ソースをチェックアウト
+      # 1) コードをチェックアウト
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2) Node.js と pnpm キャッシュセットアップ
+      # 2) Node.js をセットアップ
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18.x"
-          cache: "pnpm"
+          node-version: "22.x"
 
-      # 3) Corepack を有効化して pnpm を準備
-      - name: Enable Corepack
-        run: corepack enable
+      # ↓ ここから：pnpm をグローバルインストール
+      - name: Install pnpm globally
+        run: npm install -g pnpm@8
 
-      - name: Activate pnpm
-        run: corepack prepare pnpm@latest --activate
-
-      # 4) 依存パッケージをインストール
+      # 3) 依存パッケージを pnpm でインストール
       - name: Install dependencies
         run: pnpm install
 
-      # 5) ビルド
+      # 4) ビルド
       - name: Build
         run: pnpm run build
 
-      # 6) Firebase Hosting にデプロイ
+      # 5) Firebase にデプロイ
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
