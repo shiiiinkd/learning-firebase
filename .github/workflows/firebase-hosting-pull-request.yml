@@ -11,32 +11,35 @@ jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+
     steps:
+      # 1) ソースをチェックアウト
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ① Node.js セットアップ (pnpm キャッシュ有効化)
+      # 2) Node.js と pnpm キャッシュセットアップ
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "22.x"
+          node-version: "18.x"
           cache: "pnpm"
 
-      # ② pnpm CLI をインストール
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      # 3) Corepack を有効化して pnpm を準備
+      - name: Enable Corepack
+        run: corepack enable
 
-      # ③ 依存をインストール
+      - name: Activate pnpm
+        run: corepack prepare pnpm@latest --activate
+
+      # 4) 依存パッケージをインストール
       - name: Install dependencies
         run: pnpm install
 
-      # ④ ビルド
+      # 5) ビルド
       - name: Build
         run: pnpm run build
 
-      # ⑤ Firebase Hosting にプレビューとしてデプロイ
+      # 6) Firebase Hosting にプレビューとしてデプロイ
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
